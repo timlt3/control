@@ -9,33 +9,35 @@ class Card():
         self.value = int(value)
         self.color = color.strip()
         self.description = description.strip()
-        self.onInstall = function()
-        self.onDiscards = function()
+#        self.onInstall = function()
+#        self.onDiscards = function()
 
         #access enum with spaces replaced with _ 
         n =  self.name.replace(" ", "_") 
-        self.ID = CardName[self.n]
+        self.ID = CardName[n]
     
     def __repr__(self): 
         return "Card()" 
+
+    #allows print() to correctly handle Card class 
     def __str__(self): 
         seq ="%13s %2d %s %s" % (str(self.name) ,self.value , str(self.color) , str(self.description))
         return seq
 
-    def onInstall(self, card):
-        if self.ID == CardName.RIFT:
-        #RIFT DESTROYS A NOVA OR ALLOWS USER TO DRAW CARD
-        elif self.ID == CardName.EXOTIC_MATTER:
-        #CHAIN CELLS WITH 6 OR LESS CHARGE
-
-    def onDiscard():
-        if self.ID == CardName.WORMHOLE:
-        elif self.ID == CardName.ANOMALY:
-        elif self.ID == CardName.REWIND:
-        elif self.ID == CardName.DARK_ENERGY:
-        elif self.ID == CardName.FUTURE_SHIFT:
-        elif self.ID == CardName.SINGULARITY:
-        elif self.ID == CardName.ANTIMATTER:
+#    def onInstall(self, card):
+#        if self.ID == CardName.RIFT:
+#        #RIFT DESTROYS A NOVA OR ALLOWS USER TO DRAW CARD
+#        elif self.ID == CardName.EXOTIC_MATTER:
+#        #CHAIN CELLS WITH 6 OR LESS CHARGE
+#
+#    def onDiscard():
+#        if self.ID == CardName.WORMHOLE:
+#        elif self.ID == CardName.ANOMALY:
+#        elif self.ID == CardName.REWIND:
+#        elif self.ID == CardName.DARK_ENERGY:
+#        elif self.ID == CardName.FUTURE_SHIFT:
+#        elif self.ID == CardName.SINGULARITY:
+#        elif self.ID == CardName.ANTIMATTER:
 
 class CardName(Enum):
     RIFT = 1
@@ -98,19 +100,19 @@ def printBoard(tab1, tab2):
     print("Player 1's score is: ", getScore(tab1))
     print("Player 1's Tableau is\n") 
     t1 = sortHand(tab1) 
-    for i in range(len(tab1)): 
-        print(t1[i])
+    for x in t1: 
+        print(x)
 
     t2 = sortHand(tab2)
-    for j in range(len(tab2)):
-        print(t2[j])
+    for x in t2:
+        print(x)
 
 #GET SCORE
 def getScore(tab): 
     #TODO sum elements of tableau
     score = 0
-    for i in range(len(tab)):
-##LEFT OFF HERER 
+    for x in tab:
+        score += x.value
 
     return score
 
@@ -133,6 +135,7 @@ def playturn(hand):
         draw(hand)
     #INSTALL
     if move == "2": 
+        install(hand)
 
     #DISCARD 
 #    if move == str(3): 
@@ -141,14 +144,14 @@ def playturn(hand):
   
 #=========================================MAIN GAME LOOP========================================#
 deal()
+turnCounter = 0
 while True: 
-    turnCounter = 0
-    if turnCounter % 0 == 1:  
-        printHand(hand1)
+    if turnCounter % 2 == 0:  
+        playturn(hand1)
     else: 
-        printHand(hand2)
+        playturn(hand2)
 
-    playturn(hand1)
+    turnCounter += 1 
 
 #=========================================DESIGN NOTES==========================================#
 # 1. DECK[0] IS TOP OF DECK  i.e. deck.append() puts an item at the bottom of the deck
