@@ -76,7 +76,8 @@ tab1 = []
 tab2 = []
 
 #==========================================FUNCTIONS=========================================#
-#SORT HANDS
+#SORT HANDS 
+#works by sorting list by card value i.e. WORKS FOR TABLEAUS
 def sortHand(hand): 
     return sorted(hand, key=operator.attrgetter('value'))
 
@@ -91,6 +92,27 @@ def printHand(hand):
     h= sortHand(hand)
     for i in range(len(h)): 
         print(h[i]) 
+
+#PRINT BOARD 
+def printBoard(tab1, tab2): 
+    print("Player 1's score is: ", getScore(tab1))
+    print("Player 1's Tableau is\n") 
+    t1 = sortHand(tab1) 
+    for i in range(len(tab1)): 
+        print(t1[i])
+
+    t2 = sortHand(tab2)
+    for j in range(len(tab2)):
+        print(t2[j])
+
+#GET SCORE
+def getScore(tab): 
+    #TODO sum elements of tableau
+    score = 0
+    for i in range(len(tab)):
+##LEFT OFF HERER 
+
+    return score
 
 #DRAW CARD
 def draw(playerHand): 
@@ -120,12 +142,19 @@ def playturn(hand):
 #=========================================MAIN GAME LOOP========================================#
 deal()
 while True: 
+    turnCounter = 0
+    if turnCounter % 0 == 1:  
+        printHand(hand1)
+    else: 
+        printHand(hand2)
+
     playturn(hand1)
 
-################DESIGN NOTES ############## 
+#=========================================DESIGN NOTES==========================================#
 # 1. DECK[0] IS TOP OF DECK  i.e. deck.append() puts an item at the bottom of the deck
-################################### WHAT AM I DOING NOW?
-# assuming every card has no ability, get field working 
+
+#=========================================WHAT NOW?==========================================#
+# assuming every card has no ability, get board working 
 # score counting function in loop 
 # instlal, diffuse, discard
 # LEFT OFF LINE 15 TYRING TO LEFT JUSTIFY FIRST ELEMTN OF STIRNG 
