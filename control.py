@@ -91,9 +91,11 @@ def deal():
 
 #PRINT HAND 
 def printHand(hand): 
-    h= sortHand(hand)
+    h = sortHand(hand)
+    p = 0
     for i in range(len(h)): 
-        print(h[i]) 
+        print("card", p,":", h[i]) 
+        p += 1
 
 #PRINT BOARD 
 def printBoard(tab1, tab2): 
@@ -124,6 +126,15 @@ def draw(playerHand):
 #INSTALL CARD
 def install(card, tab):
     tab.append(card)
+
+#GET PLAYER CHOICE OF CARD (TO INSTALL OR DISCARD)
+def getChoice(hand, text):
+    while True:
+        print("Which card would you like to" + text + "?")
+        printHand(hand)
+        choice = input()
+        if 0 <= int(choice) <= len(hand):
+            return choice
 
 #PLAYER TURNS 
 def playturn(hand): 
@@ -162,3 +173,6 @@ while True:
 # instlal, diffuse, discard
 # LEFT OFF LINE 15 TYRING TO LEFT JUSTIFY FIRST ELEMTN OF STIRNG 
 # EVENT DRIVEN PROGRAMMING: define methods for Card class like onInstall() and onDiscard() that call other functions if the card has abilities activated. 
+#=======================================TODO
+#TODO IMPLEMENT "BACK": ALLOW USER TO CANCEL HIS CHOICE IF HE DIDNT MEAN TO CLICK INSTALL, DISCARD, WHATEVER  
+#TODO "TRY CATCHING" AND HOW TO HANDLE BAD INPUT FROM USER  -> used in getChoice and playturn()
