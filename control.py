@@ -12,9 +12,9 @@ class Card():
         self.onInstall = function()
         self.onDiscards = function()
 
-        #REPLACE SPACE W UNDESRCORE
-
-        self.ID = CardName[self.name]
+        #access enum with spaces replaced with _ 
+        n =  self.name.replace(" ", "_") 
+        self.ID = CardName[self.n]
     
     def __repr__(self): 
         return "Card()" 
@@ -24,7 +24,7 @@ class Card():
 
     def onInstall(self, card):
         if self.ID == CardName.RIFT:
-            #RIFT DESTROYS A NOVA OR ALLOWS USER TO DRAW CARD
+        #RIFT DESTROYS A NOVA OR ALLOWS USER TO DRAW CARD
         elif self.ID == CardName.EXOTIC_MATTER:
         #CHAIN CELLS WITH 6 OR LESS CHARGE
 
@@ -124,5 +124,9 @@ while True:
 
 ################DESIGN NOTES ############## 
 # 1. DECK[0] IS TOP OF DECK  i.e. deck.append() puts an item at the bottom of the deck
+################################### WHAT AM I DOING NOW?
+# assuming every card has no ability, get field working 
+# score counting function in loop 
+# instlal, diffuse, discard
 # LEFT OFF LINE 15 TYRING TO LEFT JUSTIFY FIRST ELEMTN OF STIRNG 
 # EVENT DRIVEN PROGRAMMING: define methods for Card class like onInstall() and onDiscard() that call other functions if the card has abilities activated. 
