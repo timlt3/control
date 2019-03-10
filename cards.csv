@@ -1,0 +1,13 @@
+RIFT; 1; SILVER; Draw a card OR destroy a Nova in play.
+EXOTIC MATTER; 2; SILVER; You may install another Fuel Cell with a charge of six or less, a chain cannot exceed a charge of 10
+DEFLECTOR; 3; SILVER; If destroyed by an Anomaly's ability, draw a card OR make a player discard a random card
+WORMHOLE; 4; BRONZE; Look thorugh the discard pile. Take one card from it and add it to your hand
+ANOMALY; 4; BRONZE; Destroy all silver Fuel Cells in play (including your own) 
+REWIND; 5; BRONZE; Return an Installed Fuel Cell to the bottom of the deck 
+REACTOR; 5; SILVER; This Fuel Cell is immune to defusing once installed. It is NOT immune to abilities
+DARK ENERGY; 6; BRONZE; Transfer control of a Silver Fuel Cell in play. The ability is triggered for the new owner
+FUTURE SHIFT; 6; BRONZE; Look at the top two cards of the deck. Return one to the top, then play the other however you want 
+SINGULARITY; 7; BRONZE; Destroy all Bronze Fuel Cells in play (including your own)
+ANTIMATTER; 8; BRONZE; Force and opponent to discard a random card from their hand, then one of their choice 
+TIME STOP; 9; BRONZE; Play any time a Bronze Fuel Cell is burned to cancel its ability. The stopped player gets another turn 
+NOVA; 10; BRONZE; 
