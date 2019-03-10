@@ -106,16 +106,15 @@ def printHand(hand):
 
 #PRINT TAB 
 def printTab(player): 
-    print(player.name +"'s score is: ", getScore(player.tab))
-    print(player.name +"'s Tableau is: ") 
-    t1 = sortHand(player.tab) 
+    print("Player 1's score is: ", getScore(tab1)) #TODO change to fall in line with code rewiret
+    print("Player 1's Tableau is\n") 
+    t1 = sortHand(tab1) 
     for x in t1: 
         print(x)
 
-
-def printBoard(player1, player2):
-    printTab(player1)
-    printTab(player2)
+    t2 = sortHand(tab2)
+    for x in t2:
+        print(x)
 
 #GET SCORE
 def getScore(tab): 
@@ -158,7 +157,6 @@ def getChoice(player, text):
 #PLAYER TURNS 
 def playturn(player): 
     player.hand = sortHand(player.hand)
-    print(player.name + "'s turn: ")
     printHand(player.hand)
     
 
