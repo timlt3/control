@@ -106,13 +106,17 @@ def printHand(hand):
 
 #PRINT TAB 
 def printTab(player): 
-    print(player.name +"'s score is: ", getScore(player.tab))
-    print(player.name +"'s Tableau is: ") 
+    print("\n")
+    print(player.name, "'s score is: ", getScore(player.tab))
+    print(player.name, "'s Tableau is: ") 
+    print("======================")
     t1 = sortHand(player.tab) 
     for x in t1: 
         print(x)
+    print("======================")
 
 
+#PRINT BOARD
 def printBoard(player1, player2):
     printTab(player1)
     printTab(player2)
@@ -185,6 +189,9 @@ def playturn(player):
 deal()
 turnCounter = 0
 while True: 
+    print("#########################################") 
+    print("Turn ", turnCounter)
+    print("#########################################") 
     printBoard(player1, player2)
     if turnCounter % 2 == 0:  
         playturn(player1)
