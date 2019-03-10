@@ -30,14 +30,15 @@ class Card():
 #        elif self.ID == CardName.EXOTIC_MATTER:
 #        #CHAIN CELLS WITH 6 OR LESS CHARGE
 #
-#    def onDiscard():
-#        if self.ID == CardName.WORMHOLE:
-#        elif self.ID == CardName.ANOMALY:
-#        elif self.ID == CardName.REWIND:
-#        elif self.ID == CardName.DARK_ENERGY:
-#        elif self.ID == CardName.FUTURE_SHIFT:
-#        elif self.ID == CardName.SINGULARITY:
-#        elif self.ID == CardName.ANTIMATTER:
+    def onDiscard(self):
+        print(self.name + ": Discard effects not implemented")
+        #if self.ID == CardName.WORMHOLE:
+        #elif self.ID == CardName.ANOMALY:
+        #elif self.ID == CardName.REWIND:
+        #elif self.ID == CardName.DARK_ENERGY:
+        #elif self.ID == CardName.FUTURE_SHIFT:
+        #elif self.ID == CardName.SINGULARITY:
+        #elif self.ID == CardName.ANTIMATTER:
 
 class CardName(Enum):
     RIFT = 1
@@ -76,6 +77,9 @@ hand2 = []
 #PLAYER TABLEAU
 tab1 = []
 tab2 = []
+
+#DISCARD PILE
+discardPile = []
 
 #==========================================FUNCTIONS=========================================#
 #SORT HANDS 
@@ -125,6 +129,13 @@ def draw(playerHand):
 def install(card, tab):
     tab.append(card)
 
+#DISCARD CARD
+def discard(cardIndex, hand):
+    assert(0 <= cardIndex <= len(hand))
+    card = hand.pop(cardIndex)
+    discardPile.append(card)
+    card.onDiscard()
+
 #PLAYER TURNS 
 def playturn(hand): 
     printHand(hand)
@@ -135,10 +146,13 @@ def playturn(hand):
         draw(hand)
     #INSTALL
     if move == "2": 
+        # TODO: Implement this correctly
         install(hand)
 
     #DISCARD 
-#    if move == str(3): 
+    if move == "3": 
+        cardIndex = getChoice()
+        discard(cardIndex, hand)
     #DIffuse 
 #    if move == str(4): 
   
