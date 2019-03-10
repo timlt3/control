@@ -9,10 +9,8 @@ class Card():
         self.value = int(value)
         self.color = color.strip()
         self.description = description.strip()
-#        self.onInstall = function()
-#        self.onDiscards = function()
 
-        #access enum with spaces replaced with _ 
+        # Access enum with spaces replaced with _
         n =  self.name.replace(" ", "_") 
         self.ID = CardName[n]
     
@@ -149,24 +147,32 @@ def discard(cardIndex, player):
     discardPile.append(card)
     card.onDiscard()
 
+#DIFFUSE
+def diffuse(player, otherplayer, theirCardIndex, myCardIndex):
+    defusedCard = otherplayer.tab[theirCardIndex]
+    otherplayer.tab.pop(theirCardIndex)
+    player.hand.pop(myCardIndex)
+    defusedCard.onDiscard()
+
 #GET PLAYER CHOICE OF CARD (TO INSTALL OR DISCARD)
-def getChoice(player, text):
+def getChoice(choices, text):
     while True:
         print("Which card would you like to " + text + "?")
-        printHand(player.hand)
+        printHand(choices)
         choice = input()
         choice = int(choice)
-        if 0 <= choice < len(player.hand):
+        if 0 <= choice < len(choices):
             return choice
 
 #PLAYER TURNS 
-def playturn(player): 
+def playturn(player, otherplayer): 
     player.hand = sortHand(player.hand)
+    player.tab = sortHand(player.tab)
+    otherplayer.hand = sortHand(otherplayer.hand)
+    otherplayer.tab = sortHand(otherplayer.tab)
     print(player.name + "'s turn: ")
     printHand(player.hand)
     
-
-
     print("=================") 
     move = input("Choose from the following: 1. Draw, 2. Install, 3. Discard, 4. Diffuse\n")
     #DRAW 
@@ -175,15 +181,17 @@ def playturn(player):
     #INSTALL
     if move == "2": 
         # TODO: Implement this correctly
-        cardIndex = getChoice(player, "install")
+        cardIndex = getChoice(player.hand, "install")
         install(cardIndex, player) 
-
     #DISCARD 
     if move == "3": 
-        cardIndex = getChoice(player, "discard")
+        cardIndex = getChoice(player.hand, "discard")
         discard(cardIndex, player)
-    #DIffuse 
-#    if move == str(4): 
+    #DIffUSE 
+    if move == "4": 
+        theirCard = getChoice(otherplayer.tab, "diffuse")
+        myCard = getChoice(player.hand, "use to diffuse " + otherplayer.tab[theirCard].name)
+        diffuse(player, otherplayer, theirCard, myCard)
   
 #=========================================MAIN GAME LOOP========================================#
 deal()
@@ -194,9 +202,9 @@ while True:
     print("#########################################") 
     printBoard(player1, player2)
     if turnCounter % 2 == 0:  
-        playturn(player1)
+        playturn(player1, player2)
     else: 
-        playturn(player2)
+        playturn(player2, player1)
 
     turnCounter += 1 
 
@@ -213,6 +221,8 @@ while True:
 #=======================================TODO
 #TODO IMPLEMENT "BACK": ALLOW USER TO CANCEL HIS CHOICE IF HE DIDNT MEAN TO CLICK INSTALL, DISCARD, WHATEVER  
 #TODO "TRY CATCHING" AND HOW TO HANDLE BAD INPUT FROM USER  -> used in getChoice and playturn()
+#TODO Defuse should not allow you to try to use something of low value to defuse something of higher value.
+#TODO Add checks to Diffuse: currently does not validation on the cards selected, or even checks that there are cards to diffuse
 
 #3. DISCARD
 #4. INSTALL 
