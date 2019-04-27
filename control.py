@@ -3,166 +3,17 @@ import csv #for reading csv file
 from random import shuffle #for shuffling the deck
 import operator  #FOR SORTING HANDS, lets you sort on class members
 
-STARTING_HAND_SIZE = 5
-HAND_LIMIT = 7
+from CardName import CardName
+from Card import Card
+from Constants import *
+from Player import Player
+from Util import *
+import Game
 
-class CardName(Enum):
-    RIFT = 1
-    EXOTIC_MATTER = 2
-    DEFLECTOR = 3
-    WORMHOLE = 4
-    ANOMALY = 5
-    REWIND = 6
-    REACTOR = 7
-    DARK_ENERGY = 8
-    FUTURE_SHIFT = 9
-    SINGULARITY = 10
-    ANTIMATTER = 11
-    TIME_STOP = 12
-    NOVA = 13
-
-class Card(): 
-    def __init__(self, name, value, color, description):
-        self.name = name.strip()
-        self.value = int(value)
-        self.color = color.strip()
-        self.description = description.strip()
-
-        # Access enum with spaces replaced with _
-        n =  self.name.replace(" ", "_") 
-        self.ID = CardName[n]
-    
-    def __repr__(self): 
-        return "Card()" 
-
-    #allows print() to correctly handle Card class 
-    def __str__(self): 
-        seq ="%13s %2d %s %s" % (str(self.name) ,self.value , str(self.color) , str(self.description))
-        return seq
-
-    def onInstall(self):
-        print(self.name + ": Install effects not implemented")
-        #if self.ID == CardName.RIFT:
-        #RIFT DESTROYS A NOVA OR ALLOWS USER TO DRAW CARD
-        #elif self.ID == CardName.EXOTIC_MATTER:
-        #CHAIN CELLS WITH 6 OR LESS CHARGE
-
-    def onDiscard(self):
-        print(self.name + ": Discard effects not implemented")
-        #if self.ID == CardName.WORMHOLE:
-        #elif self.ID == CardName.ANOMALY:
-        #elif self.ID == CardName.REWIND:
-        #elif self.ID == CardName.DARK_ENERGY:
-        #elif self.ID == CardName.FUTURE_SHIFT:
-        #elif self.ID == CardName.SINGULARITY:
-        #elif self.ID == CardName.ANTIMATTER:
-
-class Player(): 
-    def __init__(self, name):
-        self.hand = [] 
-        self.tab = []
-        self.name = name
-
-    #SORT HANDS 
-    #works by sorting list by card value i.e. WORKS FOR TABLEAUS
-    def sortHandAndTableau(self): 
-        self.hand = sorted(self.hand, key=operator.attrgetter('value'))
-        self.tab = sorted(self.tab, key=operator.attrgetter('value'))
-
-    #DRAW CARD
-    def draw(self): 
-        self.sortHandAndTableau()
-        # TODO: Should we assume here that the player has less than 7 cards?
-        if len(g.deck) != 0 and len(self.hand) < HAND_LIMIT:
-            self.hand.append(g.deck.pop(0))
-
-    #GET SCORE
-    def getScore(self): 
-        self.sortHandAndTableau()
-        score = 0
-        for x in self.tab:
-            score += x.value
-        return score
-
-    #PRINT HAND 
-    def printHand(self): 
-        self.sortHandAndTableau()
-        prettyPrintCards(self.hand)
-
-    #PRINT TAB 
-    def printTab(self): 
-        self.sortHandAndTableau()
-        print("\n")
-        print(self.name, "'s score is: ", self.getScore())
-        print(self.name, "'s Tableau is: ") 
-        print("======================")
-        prettyPrintCards(self.tab)
-        print("======================")
-
-
-class Game():
-    def __init__(self, player_one_name, player_two_name):
-        self.player = []
-        self.player.append(Player(player_one_name))
-        self.player.append(Player(player_two_name))
-        self.deck = []
-        #INITIALIZE THE DECK FROM CSV FILE 
-        with open('cards.csv', newline='') as csvfile: 
-            text = csv.reader(csvfile, delimiter=';', quotechar='"') 
-            #DECK LENGTH LEFT AT 10 CARDS FOR EASIER TESTING, MULTIPLY BY 4 WHEN COMPLETE 
-            for row in text:
-                c = Card(row[0], row[1], row[2], row[3]) 
-                self.deck.append(c) 
-
-        #SHUFFLE THE DECK 
-        shuffle(self.deck) 
-
-        self.discardPile = []
-
-    #INSTALL CARD
-    def install(self, cardIndex, playerIndex):
-        player = self.player[playerIndex]
-
-        assert(0 <= cardIndex < len(player.hand))
-        card = player.hand.pop(cardIndex)
-        player.tab.append(card) 
-        card.onInstall()
-
-    #DISCARD CARD
-    def discard(self, cardIndex, playerIndex):
-        player = self.player[playerIndex]
-
-        assert(0 <= cardIndex < len(player.hand))
-        card = player.hand.pop(cardIndex)
-        self.discardPile.append(card)
-        card.onDiscard()
-
-    #DIFFUSE
-    def diffuse(self, playerIndex, theirCardIndex, myCardIndex):
-        player = self.player[playerIndex]
-        otherplayer = self.player[1-playerIndex]
-
-        defusedCard = otherplayer.tab[theirCardIndex]
-        otherplayer.tab.pop(theirCardIndex)
-        player.hand.pop(myCardIndex)
-        defusedCard.onDiscard()
-
-
-
-
-g = Game("PLAYER 1", "PLAYER 2")
-
-
-    
-
+Game.createGame("PLAYER 1", "PLAYER 2")
+g = Game.getGame()
 
 #==========================================FUNCTIONS=========================================#
-
-#PRINT LIST OF CARDS
-def prettyPrintCards(cards):
-    for i, card in enumerate(cards):
-        print("card", i, ":", card)
-
 
 #PRINT BOARD
 def printBoard():
