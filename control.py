@@ -3,6 +3,24 @@ import csv #for reading csv file
 from random import shuffle #for shuffling the deck
 import operator  #FOR SORTING HANDS, lets you sort on class members
 
+STARTING_HAND_SIZE = 5
+HAND_LIMIT = 7
+
+class CardName(Enum):
+    RIFT = 1
+    EXOTIC_MATTER = 2
+    DEFLECTOR = 3
+    WORMHOLE = 4
+    ANOMALY = 5
+    REWIND = 6
+    REACTOR = 7
+    DARK_ENERGY = 8
+    FUTURE_SHIFT = 9
+    SINGULARITY = 10
+    ANTIMATTER = 11
+    TIME_STOP = 12
+    NOVA = 13
+
 class Card(): 
     def __init__(self, name, value, color, description):
         self.name = name.strip()
@@ -22,12 +40,13 @@ class Card():
         seq ="%13s %2d %s %s" % (str(self.name) ,self.value , str(self.color) , str(self.description))
         return seq
 
-#    def onInstall(self, card):
-#        if self.ID == CardName.RIFT:
-#        #RIFT DESTROYS A NOVA OR ALLOWS USER TO DRAW CARD
-#        elif self.ID == CardName.EXOTIC_MATTER:
-#        #CHAIN CELLS WITH 6 OR LESS CHARGE
-#
+    def onInstall(self):
+        print(self.name + ": Install effects not implemented")
+        #if self.ID == CardName.RIFT:
+        #RIFT DESTROYS A NOVA OR ALLOWS USER TO DRAW CARD
+        #elif self.ID == CardName.EXOTIC_MATTER:
+        #CHAIN CELLS WITH 6 OR LESS CHARGE
+
     def onDiscard(self):
         print(self.name + ": Discard effects not implemented")
         #if self.ID == CardName.WORMHOLE:
@@ -39,172 +58,167 @@ class Card():
         #elif self.ID == CardName.ANTIMATTER:
 
 class Player(): 
-    def __init__(self):
+    def __init__(self, name):
         self.hand = [] 
         self.tab = []
-        self.name = str()
+        self.name = name
 
-class CardName(Enum):
-    RIFT = 1
-    EXOTIC_MATTER = 2
-    DEFLECTOR = 3
-    WORMHOLE = 4
-    ANOMALY = 5
-    REWIND = 6
-    REACTOR = 7
-    DARK_ENERGY = 8
-    FUTURE_SHIFT = 9
-    SINGULARITY = 10
-    ANTIMATTER = 11
-    TIME_STOP = 12
-    NOVA = 13
+    #SORT HANDS 
+    #works by sorting list by card value i.e. WORKS FOR TABLEAUS
+    def sortHandAndTableau(self): 
+        self.hand = sorted(self.hand, key=operator.attrgetter('value'))
+        self.tab = sorted(self.tab, key=operator.attrgetter('value'))
+
+    #DRAW CARD
+    def draw(self): 
+        self.sortHandAndTableau()
+        # TODO: Should we assume here that the player has less than 7 cards?
+        if len(g.deck) != 0 and len(self.hand) < HAND_LIMIT:
+            self.hand.append(g.deck.pop(0))
+
+    #GET SCORE
+    def getScore(self): 
+        self.sortHandAndTableau()
+        score = 0
+        for x in self.tab:
+            score += x.value
+        return score
+
+    #PRINT HAND 
+    def printHand(self): 
+        self.sortHandAndTableau()
+        prettyPrintCards(self.hand)
+
+    #PRINT TAB 
+    def printTab(self): 
+        self.sortHandAndTableau()
+        print("\n")
+        print(self.name, "'s score is: ", self.getScore())
+        print(self.name, "'s Tableau is: ") 
+        print("======================")
+        prettyPrintCards(self.tab)
+        print("======================")
+
+
+class Game():
+    def __init__(self, player_one_name, player_two_name):
+        self.player = []
+        self.player.append(Player(player_one_name))
+        self.player.append(Player(player_two_name))
+        self.deck = []
+        #INITIALIZE THE DECK FROM CSV FILE 
+        with open('cards.csv', newline='') as csvfile: 
+            text = csv.reader(csvfile, delimiter=';', quotechar='"') 
+            #DECK LENGTH LEFT AT 10 CARDS FOR EASIER TESTING, MULTIPLY BY 4 WHEN COMPLETE 
+            for row in text:
+                c = Card(row[0], row[1], row[2], row[3]) 
+                self.deck.append(c) 
+
+        #SHUFFLE THE DECK 
+        shuffle(self.deck) 
+
+        self.discardPile = []
+
+    #INSTALL CARD
+    def install(self, cardIndex, playerIndex):
+        player = self.player[playerIndex]
+
+        assert(0 <= cardIndex < len(player.hand))
+        card = player.hand.pop(cardIndex)
+        player.tab.append(card) 
+        card.onInstall()
+
+    #DISCARD CARD
+    def discard(self, cardIndex, playerIndex):
+        player = self.player[playerIndex]
+
+        assert(0 <= cardIndex < len(player.hand))
+        card = player.hand.pop(cardIndex)
+        self.discardPile.append(card)
+        card.onDiscard()
+
+    #DIFFUSE
+    def diffuse(self, playerIndex, theirCardIndex, myCardIndex):
+        player = self.player[playerIndex]
+        otherplayer = self.player[1-playerIndex]
+
+        defusedCard = otherplayer.tab[theirCardIndex]
+        otherplayer.tab.pop(theirCardIndex)
+        player.hand.pop(myCardIndex)
+        defusedCard.onDiscard()
+
+
+
+
+g = Game("PLAYER 1", "PLAYER 2")
+
 
     
 
-#INITIALIZE THE DECK FROM CSV FILE 
-deck = []
-with open('cards.csv', newline='') as csvfile: 
-    text = csv.reader(csvfile, delimiter=';', quotechar='"') 
-#DECK LENGTH LEFT AT 10 CARDS FOR EASIER TESTING, MULTIPLY BY 4 WHEN COMPLETE 
-    for row in text:
-        c = Card(row[0], row[1], row[2], row[3]) 
-        deck.append(c) 
-
-#SHUFFLE THE DECK 
-shuffle(deck) 
-
-#==========================================GLOBAL DATA=========================================#
-#DISCARD PILE
-discardPile = []
-
-player1 = Player()
-player1.name = "PLAYER 1"
-player2 = Player() 
-player2.name = "PLAYER 2" 
 
 #==========================================FUNCTIONS=========================================#
-#SORT HANDS 
-#works by sorting list by card value i.e. WORKS FOR TABLEAUS
-def sortHand(hand): 
-    return sorted(hand, key=operator.attrgetter('value'))
 
-#DEAL HAND 
-def deal(): 
-    for i in range(5): 
-        draw(player1)
-        draw(player2)
-
-#PRINT HAND 
-def printHand(hand): 
-    h = sortHand(hand)
-    p = 0
-    for i in range(len(h)): 
-        print("card", p,":", h[i]) 
-        p += 1
-
-#PRINT TAB 
-def printTab(player): 
-    print("\n")
-    print(player.name, "'s score is: ", getScore(player.tab))
-    print(player.name, "'s Tableau is: ") 
-    print("======================")
-    t1 = sortHand(player.tab) 
-    for x in t1: 
-        print(x)
-    print("======================")
+#PRINT LIST OF CARDS
+def prettyPrintCards(cards):
+    for i, card in enumerate(cards):
+        print("card", i, ":", card)
 
 
 #PRINT BOARD
-def printBoard(player1, player2):
-    printTab(player1)
-    printTab(player2)
-
-#GET SCORE
-def getScore(tab): 
-    #TODO sum elements of tableau
-    score = 0
-    for x in tab:
-        score += x.value
-
-    return score
-
-#DRAW CARD
-def draw(player): 
-    if len(deck) != 0 and len(player.hand) < 7:
-        player.hand.append(deck.pop(0))
-
-#INSTALL CARD
-def install(cardIndex, player):
-    assert(0 <= cardIndex < len(player.hand))
-    card = player.hand.pop(cardIndex)
-    player.tab.append(card) 
-    player.tab = sortHand(player.tab)
-
-#DISCARD CARD
-def discard(cardIndex, player):
-    assert(0 <= cardIndex < len(player.hand))
-    card = player.hand.pop(cardIndex)
-    discardPile.append(card)
-    card.onDiscard()
-
-#DIFFUSE
-def diffuse(player, otherplayer, theirCardIndex, myCardIndex):
-    defusedCard = otherplayer.tab[theirCardIndex]
-    otherplayer.tab.pop(theirCardIndex)
-    player.hand.pop(myCardIndex)
-    defusedCard.onDiscard()
+def printBoard():
+    g.player[0].printTab()
+    g.player[1].printTab()
 
 #GET PLAYER CHOICE OF CARD (TO INSTALL OR DISCARD)
 def getChoice(choices, text):
     while True:
         print("Which card would you like to " + text + "?")
-        printHand(choices)
+        prettyPrintCards(choices)
         choice = input()
         choice = int(choice)
         if 0 <= choice < len(choices):
             return choice
 
 #PLAYER TURNS 
-def playturn(player, otherplayer): 
-    player.hand = sortHand(player.hand)
-    player.tab = sortHand(player.tab)
-    otherplayer.hand = sortHand(otherplayer.hand)
-    otherplayer.tab = sortHand(otherplayer.tab)
+def playturn(playerIndex): 
+    player = g.player[playerIndex]
+    otherplayer = g.player[1-playerIndex]
+
     print(player.name + "'s turn: ")
-    printHand(player.hand)
+    player.printHand()
     
     print("=================") 
     move = input("Choose from the following: 1. Draw, 2. Install, 3. Discard, 4. Diffuse\n")
     #DRAW 
     if move == "1": 
-        draw(player)
+        player.draw()
     #INSTALL
     if move == "2": 
         # TODO: Implement this correctly
         cardIndex = getChoice(player.hand, "install")
-        install(cardIndex, player) 
+        g.install(cardIndex, playerIndex) 
     #DISCARD 
     if move == "3": 
         cardIndex = getChoice(player.hand, "discard")
-        discard(cardIndex, player)
+        g.discard(cardIndex, playerIndex)
     #DIffUSE 
     if move == "4": 
         theirCard = getChoice(otherplayer.tab, "diffuse")
         myCard = getChoice(player.hand, "use to diffuse " + otherplayer.tab[theirCard].name)
-        diffuse(player, otherplayer, theirCard, myCard)
+        g.diffuse(playerIndex, theirCard, myCard)
   
-#=========================================MAIN GAME LOOP========================================#
-deal()
+# =========================================MAIN GAME LOOP======================================== #
+for i in range(STARTING_HAND_SIZE):
+    g.player[0].draw()
+    g.player[1].draw()
+
 turnCounter = 0
 while True: 
     print("#########################################") 
     print("Turn ", turnCounter)
     print("#########################################") 
-    printBoard(player1, player2)
-    if turnCounter % 2 == 0:  
-        playturn(player1, player2)
-    else: 
-        playturn(player2, player1)
+    printBoard()
+    playturn(turnCounter % 2)
 
     turnCounter += 1 
 
